@@ -3,9 +3,9 @@
 
 <div align="center">
 
-![license](https://img.shields.io/github/license/leoraclet/fractals)
-![language](https://img.shields.io/github/languages/top/leoraclet/fractals)
-![lastcommit](https://img.shields.io/github/last-commit/leoraclet/fractals)
+![license](https://img.shields.io/github/license/leoraclet/fractals-generator)
+![language](https://img.shields.io/github/languages/top/leoraclet/fractals-generator)
+![lastcommit](https://img.shields.io/github/last-commit/leoraclet/fractals-generator)
 <br>
 ![Release](https://img.shields.io/badge/Release-v1.0-blueviolet)
 ![Language](https://img.shields.io/badge/Language-C++-1d50de)
@@ -141,7 +141,7 @@ Then, configure it to enable [Flakes](https://nixos.wiki/wiki/flakes) according 
 Once you're ready, you can start by cloning this repo
 
 ```bash
-git clone https://github.com/leoraclet/fractals
+git clone https://github.com/leoraclet/fractals-generator
 cd fractals
 ```
 
@@ -183,7 +183,7 @@ You can start by installing nix [here](https://nixos.org/download/#nix-install-w
 ## 🚀 Releases
 
 To run the program without editing the source code or building it yourself, go see the
-[**Releases**](https://github.com/leoraclet/fractals/releases).
+[**Releases**](https://github.com/leoraclet/fractals-generator/releases).
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
