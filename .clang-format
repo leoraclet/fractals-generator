@@ -1,0 +1,47 @@
+# A .clang-format file to adhere to the Google C++ style guide
+# - Google C++ Style Guide: https://google.github.io/styleguide/cppguide.html
+# - CLANG-FORMAT STYLE OPTIONS: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+#
+# Author: Munseong Jeong <ryan.m.jeong@hotmail.com>
+
+BasedOnStyle: Google
+Language: Cpp
+Standard: c++14
+
+# Sort each #include block separately (if foo.cc includes foo.hpp on the top block, it can be preserved)
+IncludeBlocks: Preserve
+
+# Always merge short blocks into a single line
+# before:
+#   while (true) {
+#   }
+# after:
+#   while (true) {}
+#
+# Munseong: this rule allows this case
+# intended:
+# try {
+#   /* ... */
+# } catch {
+#   return nullptr;
+# }
+#
+# after formatting:
+# try {
+#   /* ... */
+# } catch { return nullptr; }
+#
+# to avoid this case; add a comment like this:
+# try {
+#   /* ... */
+# } catch {
+#   // Munseong: this clause is ...
+#   return nullptr;
+# }
+AllowShortBlocksOnASingleLine: Always
+
+# Don't allow short enums on a single line
+AllowShortEnumsOnASingleLine: false
+
+# Allow c-style casting style
+SpaceAfterCStyleCast: true

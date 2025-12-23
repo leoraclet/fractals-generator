@@ -1,13 +1,17 @@
 // ==================================================== //
 //
-// Copyright © 2022
-//
 // Description : Fractals with emulated doubles
 // Author      : Léo Raclet
 // License     : MIT
 // Version     : v1.0.0
 //
 // ==================================================== //
+
+// Emulation based on GLSL Mandelbrot Shader by Henry Thasler
+// (www.thasler.org/blog) and on Fortran-90 double-single package (See
+// http://crd.lbl.gov/~dhbailey/mpdist/)
+
+// Smooth coloring based on http://linas.org/art-gallery/escape/escape.html
 
 #version 420
 
@@ -24,10 +28,10 @@ uniform float cR, cI;    // Constant
 uniform float cx0, cx1;  // Center of the complex plane on the x-axis
 uniform float cy0, cy1;  // Center of the complex plane on the y-axis
 
-uniform int resolution;  // Rendering resolution
 uniform int iterations;  // Maximum number of iterations
 uniform int fractal;     // Which fractal to draw ?
 uniform int color;       // How to color the fractal ?
+uniform vec2 mousepos;   // Mouse position
 
 out vec4 FragColor;      // Pixel color
 
@@ -305,6 +309,166 @@ vec2 ds_sqr(vec2 a)
     return ds_mul(a, a);
 }
 
+// ###########################
+// ###########################
+//
+// TODO: VERIFY !
+// https://github.com/BL-highprecision/QD/blob/main/src/dd_real.cpp
+//
+// ###########################
+// ###########################
+
+vec2 ds_round(vec2 a)
+{
+    return vec2(round(a.x + a.y), 0.0);
+}
+
+vec2 ds_ldexp(vec2 a, int exp)
+{
+  float scale = ldexp(1.0, exp);
+  return vec2(a.x * scale, a.y * scale);
+}
+
+vec2 ds_sin(vec2 x)
+{
+  vec2 pi = vec2(3.141592653589793, 1.2246467991473532e-16);
+  vec2 two_pi = ds_mul(pi, vec2(2.0, 0.0));
+  vec2 n = ds_div(x, two_pi);
+  n = ds_round(n);
+  vec2 r = ds_sub(x, ds_mul(n, two_pi));
+
+  vec2 r2 = ds_mul(r, r);
+  vec2 r3 = ds_mul(r2, r);
+  vec2 r5 = ds_mul(r3, r2);
+  vec2 r7 = ds_mul(r5, r2);
+
+  vec2 inv6 = vec2(1.66666666666666657e-01, 9.25185853854297066e-18);
+  vec2 inv120 = vec2(8.33333333333333322e-03, 1.15648231731787138e-19);
+  vec2 inv5040 = vec2(1.98412698412698413e-04, 1.72095582934207053e-22);
+
+  vec2 term1 = r;
+  vec2 term2 = ds_mul(r3, inv6);
+  vec2 term3 = ds_mul(r5, inv120);
+  vec2 term4 = ds_mul(r7, inv5040);
+
+  vec2 result = ds_sub(term1, term2);
+  result = ds_add(result, term3);
+  result = ds_sub(result, term4);
+
+  return result;
+}
+
+vec2 ds_cos(vec2 x)
+{
+  // Argument reduction: x = x mod (2*pi)
+  vec2 pi = vec2(3.141592653589793, 1.2246467991473532e-16);
+  vec2 two_pi = ds_mul(pi, vec2(2.0, 0.0));
+  vec2 n = ds_div(x, two_pi);
+  n = ds_round(n);
+  vec2 r = ds_sub(x, ds_mul(n, two_pi));
+
+  // Taylor series for cos(r)
+  vec2 r2 = ds_mul(r, r);
+  vec2 r4 = ds_mul(r2, r2);
+  vec2 r6 = ds_mul(r4, r2);
+
+  // cos(r) ≈ 1 - r2/2 + r4/24 - r6/720
+  vec2 inv2 = vec2(5.0e-1, 0.0);
+  vec2 inv24 = vec2(4.16666666666666644e-02, 2.31296463463574266e-18);
+  vec2 inv720 = vec2(1.38888888888888894e-03, -5.30054395437357706e-20);
+
+  vec2 term1 = vec2(1.0, 0.0);
+  vec2 term2 = ds_mul(r2, inv2);
+  vec2 term3 = ds_mul(r4, inv24);
+  vec2 term4 = ds_mul(r6, inv720);
+
+  vec2 result = ds_sub(term1, term2);
+  result = ds_add(result, term3);
+  result = ds_sub(result, term4);
+
+  return result;
+}
+
+vec2 ds_tan(vec2 x)
+{
+  vec2 sin_x = ds_sin(x);
+  vec2 cos_x = ds_cos(x);
+  return ds_div(sin_x, cos_x);
+}
+
+vec2 ds_sqrt(vec2 a) {
+  if (a.x < 0.0) {
+    return vec2(0.0 / 0.0, 0.0);
+  }
+  if (a.x == 0.0 && a.y == 0.0) {
+    return vec2(0.0, 0.0);
+  }
+
+  float x = inversesqrt(a.x);
+  vec2 ax = ds_mul(a, vec2(x, 0.0));
+  vec2 ax_sqr = ds_mul(ax, ax);
+  vec2 diff = ds_sub(a, ax_sqr);
+  vec2 term = ds_mul(diff, vec2(x * 0.5, 0.0));
+  vec2 result = ds_add(ax, term);
+
+  return result;
+}
+
+vec2 ds_exp(vec2 a) {
+  if (a.x <= -709.0) {
+    return vec2(0.0, 0.0);
+  }
+  if (a.x >= 709.0) {
+    return vec2(1.0 / 0.0, 0.0);
+  }
+
+  vec2 log2 = vec2(0.6931471805599453, 2.3190468138462996e-17);
+  float m = floor(a.x / log2.x + 0.5);
+  vec2 r = ds_sub(a, ds_mul(log2, vec2(m, 0.0)));
+
+  vec2 r_sqr = ds_mul(r, r);
+  vec2 s = ds_add(r, ds_mul(r_sqr, vec2(0.5, 0.0)));
+  vec2 p = ds_mul(r_sqr, r);
+  vec2 t = ds_mul(p, vec2(1.66666666666666657e-01, 9.25185853854297066e-18));
+  s = ds_add(s, t);
+  p = ds_mul(p, r_sqr);
+  t = ds_mul(p, vec2(8.33333333333333322e-03, 1.15648231731787138e-19));
+  s = ds_add(s, t);
+
+  return ds_ldexp(s, int(m));
+}
+
+vec2 ds_log(vec2 a) {
+  if (a.x <= 0.0) {
+    return vec2(0.0 / 0.0, 0.0);
+  }
+
+  float x = log(a.x);
+  vec2 exp_x = ds_exp(vec2(x, 0.0));
+  vec2 diff = ds_sub(a, exp_x);
+  vec2 term = ds_div(diff, exp_x);
+  vec2 result = ds_add(vec2(x, 0.0), term);
+
+  return result;
+}
+
+vec2 ds_pow(vec2 a, vec2 b) {
+  if (a.x == 0.0 && a.y == 0.0 && b.x == 0.0 && b.y == 0.0) {
+    return vec2(0.0 / 0.0, 0.0);
+  }
+
+  vec2 log_a = ds_log(a);
+  vec2 b_log_a = ds_mul(b, log_a);
+  vec2 result = ds_exp(b_log_a);
+
+  return result;
+}
+
+// ###########################
+// ###########################
+// ###########################
+// ###########################
+
 // ==================================================== //
 // Functions to compute operations on double-complex
 // ==================================================== //
@@ -430,7 +594,33 @@ vec4 dc_mul_c(vec4 a, vec4 b)
 }
 
 /*
- * @brief: Create double-complex from a double single
+ * @brief: Cosine of a double complex
+ *
+ * @param a: Double-complex
+ *
+ * @return: Cosine value of the two double-complex
+ */
+
+vec2 dc_cos(vec4 a)
+{
+    return vec2(0.0, 0.0);
+}
+
+/*
+ * @brief: Sinus of a double complex
+ *
+ * @param a: Double-complex
+ *
+ * @return: Sinus value of the two double-complex
+ */
+
+vec2 dc_sin(vec4 a)
+{
+    return vec2(0.0, 0.0);
+}
+
+/*
+ * @brief: Create double-complex from a single double single
  *
  * @param a: Double-single
  *
@@ -443,7 +633,7 @@ vec4 dc_set_d(vec2 a)
 }
 
 /*
- * @brief: Create double-complex from doulbe-singles
+ * @brief: Create double-complex from double-singles
  *
  * @param a: Double-single n°1
  * @param b: Double-single n°2
@@ -559,13 +749,13 @@ vec4 roots_f2[3] = {
  * @return: True if in else False
  */
 
-bool in_bulb(vec4 c)
-{
-    vec2 x = ds_sqr(ds_add(c.xy, ds_set(1.0)));
-    vec2 y = ds_sqr(c.zw);
+// bool in_bulb(vec4 c)
+// {
+//     vec2 x = ds_sqr(ds_add(c.xy, ds_set(1.0)));
+//     vec2 y = ds_sqr(c.zw);
 
-    return ds_cmp(ds_add(x, y), ds_set(0.0625)) == -1;
-}
+//     return ds_cmp(ds_add(x, y), ds_set(0.0625)) == -1;
+// }
 
 /*
  * @brief: Compute the mandelbrot set
@@ -759,6 +949,9 @@ vec4 newton_1()
     vec2 px = ds_set(gl_FragCoord.x);
     vec2 py = ds_set(gl_FragCoord.y);
 
+    // Constant
+    vec2 m = ds_set(0.0);
+
     // Compute position in complex plane from current pixel
     vec2 zx = ds_add(ds_add(vec2(cx0, cx1), ds_mul(px, vec2(z0, z1))), vec2(w0, w1));
     vec2 zy = ds_add(ds_add(vec2(cy0, cy1), ds_mul(py, vec2(z0, z1))), vec2(h0, h1));
@@ -768,6 +961,7 @@ vec4 newton_1()
 
     // Threshold target
     vec2 threshold = ds_set(0.0001);
+    vec2 maxvalue = ds_set(10000.0);
 
     // Complex number
     vec4 z = dc_set_c(zx, zy);
@@ -778,8 +972,10 @@ vec4 newton_1()
         z = dc_sub(z, dc_div(newton_f1(z), newton_d1(z)));
         z = dc_add(z, c);
 
-        for (int i = 0; i < roots_f1.length(); i++)
-        {
+        if (ds_cmp(z.wx, maxvalue) > 0 || ds_cmp(z.yz, maxvalue) > 0)
+          break;
+
+        for (int i = 0; i < roots_f1.length(); i++) {
             float val = 0.0;
             vec2 dist = dc_len_s(z, roots_f1[i]);
 
@@ -927,7 +1123,6 @@ vec4 get_color(float n)
                 (-cos(0.120 * n) + 1.0) / 2.0,
                 1.0
             );
-            
             break;
         case 2:
             return vec4(

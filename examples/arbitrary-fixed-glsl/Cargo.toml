@@ -1,0 +1,13 @@
+[package]
+name = "arbitrary-fixed-glsl"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+arbitrary-fixed = { git = "https://github.com/minerscale/arbitrary-fixed-rs" }
+
+[build-dependencies]
+arbitrary-fixed = { git = "https://github.com/minerscale/arbitrary-fixed-rs" }
+

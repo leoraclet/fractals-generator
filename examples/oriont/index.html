@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Newton Fractal</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- The Modal -->
+    <div id="modal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>How to use:</h3>
+            <p>Welcome to oriont's newton fractal!</p>
+            <p>Made using a combination of javascript and webgl, this fractal generator uses the accelerated power of
+                your graphics card to compute the color of each pixel.
+            </p>
+            <p>I test it using a GTX 970, and this program definitely gets the fan running. That means if you have
+                a worse graphics card than mine, proceed with caution!
+            </p>
+            <p>Using it is simple:</p>
+            <ul>
+                <li>The input box for the equation is in the top left.</li>
+                <li>The help menu is the button marked '?' next to the input box.</li>
+                <li>After you input an equation and press 'enter', it will show up on the canvas</li>
+            </ul>
+            <h3>Some things to note while inputting equations:</h3>
+            <p>My math parser and differentiator are rushed pieces of garbage, so they only work with certain formats.
+            </p>
+            <ul>
+                <li>DO: use z as the complex variable in f(z).</li>
+                <li>DO: use sin and cos</li>
+                <li>DO: use m as the position of the mouse in complex coordinates</li>
+                <li>DO: Make polynomials!</li>
+                <li>DON'T: use any other trig functions, including hyperbolic. (I haven't implemented them yet!)</li>
+                <li>DON'T: use e or logarithms. (I haven't implemented them yet.)</li>
+            </ul>
+            <p>I probably haven't gotten all the (general) things that you can and can't do, so if you accidentally
+                input an unrecognized equation and either the parser or the differentiator has an error, it will
+                highlight the
+                box in red and not do anything.</p>
+            <p>If this happens, just put in a different equation.</p>
+            <p>If the entire site crashes, just reload and don't use that equation, I guess.</p>
+        </div>
+    </div>
+
+    <!-- Canvas -->
+    <canvas id="canvas"></canvas>
+    <input type="text" name="function" id="function" />
+    <!-- Trigger/Open The Modal -->
+    <button id="openModal">?</button>
+    <script src="main.js"></script>
+</body>
+
+</html>

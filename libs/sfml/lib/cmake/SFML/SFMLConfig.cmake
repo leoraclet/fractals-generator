@@ -64,7 +64,7 @@ if (NOT SFML_FIND_COMPONENTS)
 endif()
 
 set(FIND_SFML_PATHS
-    "../../mingw"
+    "${CMAKE_CURRENT_LIST_DIR}/../.."
     ${SFML_ROOT}
     $ENV{SFML_ROOT}
     ~/Library/Frameworks
@@ -114,7 +114,7 @@ if (EXISTS "${targets_config_file}")
     # Set SFML_FOUND to TRUE by default, may be overwritten by one of the includes below
     set(SFML_FOUND TRUE)
     include("${targets_config_file}")
-    include("SFMLConfigDependencies.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/SFMLConfigDependencies.cmake")
 
     if (SFML_FOUND)
         foreach (component ${SFML_FIND_COMPONENTS})
@@ -144,5 +144,5 @@ if (NOT SFML_FOUND)
 endif()
 
 if (SFML_FOUND AND NOT SFML_FIND_QUIETLY)
-    message(STATUS "Found SFML 2.6.1 in ${CMAKE_CURRENT_LIST_DIR}")
+    message(STATUS "Found SFML 2.6.2 in ${CMAKE_CURRENT_LIST_DIR}")
 endif()
