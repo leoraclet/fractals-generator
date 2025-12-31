@@ -15,9 +15,8 @@
 
 </div>
 
-## Table of Contents
+## Table of contents
 
-- [Table of Contents](#table-of-contents)
 - [📖 About](#-about)
 - [🌟 Showcase](#-showcase)
     - [Mandelbrot](#mandelbrot)
@@ -127,23 +126,23 @@ When running the program, a sub-window titled **"Simulation Settings"** will app
 
 ## ⌨️ Keybindings
 
-| Key                | Action                                                                                     |
-|--------------------|--------------------------------------------------------------------------------------------|
-| Escape             | Close the window.                                                                          |
-| S                  | Take a screenshot and save it as `screen_<number>.png`.                                    |
-| R                  | Reset the view (zoom, position, iterations, and Julia constant).                            |
-| Right Arrow        | Cycle forward through color palettes.                                                     |
-| Left Arrow         | Cycle backward through color palettes.                                                    |
-| Up Arrow           | Increase the number of iterations.                                                        |
-| Down Arrow         | Decrease the number of iterations.                                                        |
-| Space              | Zoom in (hold Shift to zoom out).                                                          |
-| Z                  | Move the view upward (increase imaginary coordinate).                                     |
-| S (hold)           | Move the view downward (decrease imaginary coordinate).                                    |
-| Q                  | Move the view leftward (decrease real coordinate).                                          |
-| D                  | Move the view rightward (increase real coordinate).                                        |
-| Right Mouse        | Click and drag to pan the view.                                                           |
-| Mouse Wheel        | Scroll up to zoom in, scroll down to zoom out.                                            |
-| Shift + Space      | Zoom out (instead of zooming in).                                                          |
+| Key           | Action                                                           |
+| ------------- | ---------------------------------------------------------------- |
+| Escape        | Close the window.                                                |
+| S             | Take a screenshot and save it as `screen_<number>.png`.          |
+| R             | Reset the view (zoom, position, iterations, and Julia constant). |
+| Right Arrow   | Cycle forward through color palettes.                            |
+| Left Arrow    | Cycle backward through color palettes.                           |
+| Up Arrow      | Increase the number of iterations.                               |
+| Down Arrow    | Decrease the number of iterations.                               |
+| Space         | Zoom in (hold Shift to zoom out).                                |
+| Z             | Move the view upward (increase imaginary coordinate).            |
+| S (hold)      | Move the view downward (decrease imaginary coordinate).          |
+| Q             | Move the view leftward (decrease real coordinate).               |
+| D             | Move the view rightward (increase real coordinate).              |
+| Right Mouse   | Click and drag to pan the view.                                  |
+| Mouse Wheel   | Scroll up to zoom in, scroll down to zoom out.                   |
+| Shift + Space | Zoom out (instead of zooming in).                                |
 
 
 ## 🧰 Implementation details
