@@ -309,7 +309,7 @@ Finally, some features were inspired from [this website](https://oriont.net/newt
 To run the program without editing the source code or building it yourself, go see the
 [**Releases**](https://github.com/leoraclet/fractals-generator/releases).
 
-> [!CAUTION] About the windows release
+> [!CAUTION]
 > I’ve built a Windows-compatible executable for this project using Visual Studio in a custom Windows VM. Since it requires GPU support, I wasn’t able to test it directly — I didn’t set up GPU pass-through. However, it *should* work on a native Windows system (fingers crossed).
 >
 > **Important:** Make sure to run the executable from the same directory as the DLL files. The build isn’t static, so it will crash if it can’t find the required libraries. Looking forward to a static build in the future!
