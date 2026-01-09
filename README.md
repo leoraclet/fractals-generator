@@ -144,7 +144,6 @@ When running the program, a sub-window titled **"Simulation Settings"** will app
 | Mouse Wheel   | Scroll up to zoom in, scroll down to zoom out.                   |
 | Shift + Space | Zoom out (instead of zooming in).                                |
 
-
 ## 🧰 Implementation details
 
 Since this section could grow rapidly in size, refer to the details [right here](./doc/implementation.md).
@@ -155,19 +154,15 @@ Since this section could grow rapidly in size, refer to the details [right here]
 
     - 🔄 **Reproducible**: Built with Nix, this configuration can be effortlessly reproduced on other
     machines, ensuring a consistent setup.
-
     - 📖 **Documented**: Most of the parts of my configuration files are commented and documented with
     links and explanations if necessary
 
 - **Application**
 
     - 🌀 **Real-time fractal generation**: Utilizes GPU acceleration to render fractals instantly.
-
     - 🎨 **Colorful visualizations**: Generates vivid, dynamic color schemes for fractals.
-
     - 🖱️ **Interactive exploration**: Navigate the complex plane with your mouse — zoom in, zoom out,
     and pan smoothly.
-
     - 🔍 **Deep zoom support**: Emulates double-precision floating point on the GPU to allow
     ultra-deep zoom levels without significant loss of precision.
 
@@ -313,6 +308,11 @@ Finally, some features were inspired from [this website](https://oriont.net/newt
 
 To run the program without editing the source code or building it yourself, go see the
 [**Releases**](https://github.com/leoraclet/fractals-generator/releases).
+
+> [!CAUTION] About the windows release
+> I’ve built a Windows-compatible executable for this project using Visual Studio in a custom Windows VM. Since it requires GPU support, I wasn’t able to test it directly — I didn’t set up GPU pass-through. However, it *should* work on a native Windows system (fingers crossed).
+>
+> **Important:** Make sure to run the executable from the same directory as the DLL files. The build isn’t static, so it will crash if it can’t find the required libraries. Looking forward to a static build in the future!
 
 ## 📜 License
 
